@@ -140,57 +140,60 @@ namespace ProjNet.UnitTests.Converters.WKT
         public void TestTransformAllWKTs()
         {
             //GeographicCoordinateSystem.WGS84
-            CoordinateTransformationFactory fact = new CoordinateTransformationFactory();
-            CoordinateSystemFactory fac = new CoordinateSystemFactory();
+            var fact = new CoordinateTransformationFactory();
+            var fac = new CoordinateSystemFactory();
             int parsecount = 0;
-            StreamReader sr = File.OpenText(@"..\..\SRID.csv");
-            string line = "";
-            while (!sr.EndOfStream)
+            using (var sr = File.OpenText(TestContext.CurrentContext.TestDirectory + @"\SRID.csv"))
             {
-                line = sr.ReadLine();
-                int split = line.IndexOf(';');
-                if (split > -1)
+                while (!sr.EndOfStream)
                 {
-                    string srid = line.Substring(0, split);
-                    string wkt = line.Substring(split + 1);
-                    ICoordinateSystem cs = fac.CreateFromWkt(wkt);
-                    if (cs == null) continue; //We check this in another test.
-                    if (cs is IProjectedCoordinateSystem)
+                    var line = sr.ReadLine();
+                    var split = line.IndexOf(';');
+                    if (split > -1)
                     {
-                        switch ((cs as IProjectedCoordinateSystem).Projection.ClassName)
-                        {
-                            //Skip not supported projections
-                            case "Oblique_Stereographic":
-                            case "Transverse_Mercator_South_Orientated":
-                            //case "Hotine_Oblique_Mercator":
-                            case "Lambert_Conformal_Conic_1SP":
-                            //case "Krovak":
-                            //case "Cassini_Soldner":
-                            case "Lambert_Azimuthal_Equal_Area":
-                            case "Tunisia_Mining_Grid":
-                            case "New_Zealand_Map_Grid":
-                            case "Polyconic":
-                            case "Lambert_Conformal_Conic_2SP_Belgium":
-                            case "Polar_Stereographic":
-                                continue;
-                            default: break;
-                        }
-                    }
-                    try
-                    {
-                        ICoordinateTransformation trans = fact.CreateFromCoordinateSystems(GeographicCoordinateSystem.WGS84, cs);
-                    }
-                    catch (Exception ex)
-                    {
+                        string srid = line.Substring(0, split);
+                        string wkt = line.Substring(split + 1);
+                        ICoordinateSystem cs = fac.CreateFromWkt(wkt);
+                        if (cs == null) continue; //We check this in another test.
                         if (cs is IProjectedCoordinateSystem)
-                            Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message + "\r\nClass name:" + (cs as IProjectedCoordinateSystem).Projection.ClassName);
-                        else
-                            Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message);
+                        {
+                            switch ((cs as IProjectedCoordinateSystem).Projection.ClassName)
+                            {
+                                //Skip not supported projections
+                                case "Oblique_Stereographic":
+                                case "Transverse_Mercator_South_Orientated":
+                                //case "Hotine_Oblique_Mercator":
+                                case "Lambert_Conformal_Conic_1SP":
+                                //case "Krovak":
+                                //case "Cassini_Soldner":
+                                case "Lambert_Azimuthal_Equal_Area":
+                                case "Tunisia_Mining_Grid":
+                                case "New_Zealand_Map_Grid":
+                                case "Polyconic":
+                                case "Lambert_Conformal_Conic_2SP_Belgium":
+                                case "Polar_Stereographic":
+                                    continue;
+                                default:
+                                    break;
+                            }
+                        }
+                        try
+                        {
+                            ICoordinateTransformation trans =
+                                fact.CreateFromCoordinateSystems(GeographicCoordinateSystem.WGS84, cs);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (cs is IProjectedCoordinateSystem)
+                                Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message +
+                                            "\r\nClass name:" + (cs as IProjectedCoordinateSystem).Projection.ClassName);
+                            else
+                                Assert.Fail("Could not create transformation from:\r\n" + wkt + "\r\n" + ex.Message);
+                        }
+                        parsecount++;
                     }
-                    parsecount++;
                 }
             }
-            sr.Close();
             Assert.GreaterOrEqual(parsecount, 2556, "Not all WKT was processed");
         }
         [Test]
@@ -310,7 +313,7 @@ namespace ProjNet.UnitTests.Converters.WKT
             }
 
             Assert.IsNotNull (fcs);
-            Assert.IsNotNullOrEmpty (fcs.ToBase ());
+            Assert.IsNotEmpty(fcs.ToBase ());
             Assert.IsNotNull (fcs.BaseCoordinateSystem);
 
             Assert.AreEqual ("Local coordinate system MNAU (based on Gauss-Krueger)", fcs.Name);

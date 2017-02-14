@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using GeoAPI.CoordinateSystems;
+using NUnit.Framework;
 using ProjNet.Converters.WellKnownText;
 using ProjNet.CoordinateSystems;
 
@@ -8,7 +9,7 @@ namespace ProjNet.UnitTests
 {
     internal class SRIDReader
     {
-        private const string Filename = @"..\..\SRID.csv";
+        private static readonly string Filename = TestContext.CurrentContext.TestDirectory + @"\SRID.csv";
 
         public struct WktString {
             /// <summary>

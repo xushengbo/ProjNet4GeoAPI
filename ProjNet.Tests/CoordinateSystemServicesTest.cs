@@ -1,6 +1,4 @@
-﻿//#define LINQ
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,12 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Xml;
-using System.Xml.Linq;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
 
-namespace ProjNet
+namespace ProjNet.UnitTests
 {
     public class CoordinateSystemServicesTest
     {
@@ -67,7 +64,7 @@ namespace ProjNet
             var sw = new Stopwatch();
             sw.Start();
 
-            foreach (var sridWkt in UnitTests.SRIDReader.GetSrids())
+            foreach (var sridWkt in SRIDReader.GetSrids())
                 yield return new KeyValuePair<int, string>(sridWkt.WktId, sridWkt.Wkt);
 
             sw.Stop();

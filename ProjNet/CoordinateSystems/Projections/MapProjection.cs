@@ -37,6 +37,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using GeoAPI.CoordinateSystems;
@@ -831,9 +832,28 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         /// <param name="lon">The longitudinal value (in Degrees!)</param>
         /// <returns>The UTM zone number</returns>
-        protected static long CalcUtmZone(double lon)
+        public static long CalcUtmZone(double lon)
         {
-            return ((long) (((lon + 180.0)/6.0) + 1.0));
+            //return (long) (((lon + 180.0)/6.0) + 1.0));
+
+            // The UTM system
+            // as defined in Technical Manual 8358.1 of
+            // US NGA, Office of GEOINT Sciences, Coordinate System and Analysis Branch
+
+            // assume longitudes WEST of Greenwich are NEGATIVE
+            // assume longitudes EAST of Greenwich are POSITIVE
+            // UTM zone 1 is from 180degW def = -180deg to 174degW def = -174deg 
+            const double UTMZoneWidthDeg = 6.0; // UTM definition
+            const int UTMZoneNumber = 60; // UTM definition
+            for (var zone = 1; zone <= UTMZoneNumber; zone++)
+            {
+                var UTMZoneWestBorderDeg = -180.0 + (zone - 1) * UTMZoneWidthDeg;
+                var distancetoWestBorder = lon - UTMZoneWestBorderDeg;
+                if (distancetoWestBorder >= 0.0 && distancetoWestBorder < UTMZoneWidthDeg) return zone;
+            }
+            throw new ArgumentOutOfRangeException("lon", string.Format("No valid UTM zone could be determined for this detector at longitude: {0}", lon));
+            //return -1;
+
         }
 
         #endregion

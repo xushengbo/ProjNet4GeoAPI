@@ -20,6 +20,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+#if (NET40 || PCL)
+using System.Threading.Tasks;
+#endif
 using GeoAPI;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -47,7 +50,7 @@ namespace ProjNet
             {
                 return x.AuthorityCode == y.AuthorityCode &&
 #if PCL
-                    string.Compare(x.Authority, y.Authority, CultureInfo.InvariantCulture, CompareOptions.OrdinalIgnoreCase) == 0;
+                    string.Compare(x.Authority, y.Authority, StringComparison.OrdinalIgnoreCase) == 0;
 #else
                     string.Compare(x.Authority, y.Authority, true, CultureInfo.InvariantCulture) == 0;
 #endif
@@ -136,7 +139,11 @@ namespace ProjNet
         {
             var enumObj = (object)enumeration ?? DefaultInitialization();
             _initialization = new ManualResetEvent(false);
+#if (NET40 || PCL)
+            Task.Factory.StartNew(() => FromEnumeration(new[] { this, enumObj }));
+#else
             ThreadPool.QueueUserWorkItem(FromEnumeration, new[] { this, enumObj });
+#endif
         }
 
         //private CoordinateSystemServices(ICoordinateSystemFactory coordinateSystemFactory,

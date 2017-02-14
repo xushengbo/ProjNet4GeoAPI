@@ -12,10 +12,10 @@
 		<description>.NET Spatial Reference and Projection Engine.
 Proj.NET performs point-to-point coordinate conversions between geodetic coordinate systems for use in fx. Geographic Information Systems (GIS) or GPS applications. The spatial reference model used adheres to the Simple Features specification.
 		</description>
-		<copyright>Copyright 2006-2015</copyright>
+		<copyright>Copyright 2006-2017</copyright>
 		<tags>OGC SFS Projection</tags>
 		<dependencies>
-			<dependency id="GeoAPI" version="[1.7.4,1.8)" />
+			<dependency id="GeoAPI" version="[1.7.5-pre1,1.7.6)" />
 		</dependencies>
 	</metadata>
 	<files>
@@ -30,11 +30,15 @@ Proj.NET performs point-to-point coordinate conversions between geodetic coordin
 
 		<file src="Release\v4.0.3\AnyCPU\ProjNet.dll" target="lib\net403-client" />
 		<file src="Release\v4.0.3\AnyCPU\ProjNet.xml" target="lib\net403-client" />
-		
+
 		<file src="Release\v4.5\AnyCPU\ProjNet.dll" target="lib\net45-client" />
 		<file src="Release\v4.5\AnyCPU\ProjNet.xml" target="lib\net45-client" />
-		
+
 		<file src="Release\PCL\AnyCPU\ProjNet.dll" target="lib\portable-net403+sl5+win8+wp8+MonoAndroid+MonoTouch" />
 		<file src="Release\PCL\AnyCPU\ProjNet.xml" target="lib\portable-net403+sl5+win8+wp8+MonoAndroid+MonoTouch" />
-	</files>
+
+    <file src="Release\PCL\AnyCPU\ProjNet.dll" target="lib\portable-net403+sl5+win8+wp8+MonoAndroid+MonoTouch" />
+    <file src="Release\PCL\AnyCPU\ProjNet.xml" target="lib\portable-net403+sl5+win8+wp8+MonoAndroid+MonoTouch" />
+
+  </files>
 </package>
