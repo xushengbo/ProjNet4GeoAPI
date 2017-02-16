@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using NUnit.Framework;
@@ -22,12 +23,12 @@ namespace ProjNet.UnitTests
             {
                 var d2 = Math.Abs(p1[2] - p2[2]);
                 if (Verbose)
-                    Console.WriteLine("Allowed Tolerance {3}; got dx: {0}, dy: {1}, dz {2}", d0, d1, d2, tolerance);
+                    Debug.WriteLine("Allowed Tolerance {3}; got dx: {0}, dy: {1}, dz {2}", d0, d1, d2, tolerance);
                 return d0 < tolerance && d1 < tolerance && d2 < tolerance;
             }
-            Console.WriteLine();
+            Debug.WriteLine(String.Empty);
             if (Verbose)
-                Console.WriteLine("Allowed tolerance {2}; got dx: {0}, dy: {1}", d0, d1, tolerance);
+                Debug.WriteLine("Allowed tolerance {2}; got dx: {0}, dy: {1}", d0, d1, tolerance);
             return d0 < tolerance && d1 < tolerance;
         }
 

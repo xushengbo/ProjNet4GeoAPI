@@ -1,4 +1,5 @@
-﻿using GeoAPI.CoordinateSystems;
+﻿#if !PCL
+using GeoAPI.CoordinateSystems;
 using NUnit.Framework;
 
 namespace ProjNet.UnitTests.Serialization
@@ -22,3 +23,4 @@ namespace ProjNet.UnitTests.Serialization
         }
     }
 }
+#endif

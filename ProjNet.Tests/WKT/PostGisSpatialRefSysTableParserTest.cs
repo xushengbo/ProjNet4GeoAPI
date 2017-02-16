@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !PCL
+using System;
 using System.Data;
 using Npgsql;
 using NUnit.Framework;
@@ -98,3 +99,4 @@ namespace ProjNet.UnitTests.Converters.WKT
         }
     }
 }
+#endif

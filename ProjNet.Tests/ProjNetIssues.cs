@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NUnit.Framework;
@@ -101,7 +102,7 @@ namespace ProjNet.UnitTests
             var pExpected = new[] { 2624793.3678553337, 4571958.333297424 };
 
             var pp = ct.MathTransform.Transform(pg1);
-            Console.WriteLine(TransformationError("EPSG 4326 -> EPSG 3857", pExpected, pp));
+            Debug.WriteLine(TransformationError("EPSG 4326 -> EPSG 3857", pExpected, pp));
 
             Assert.IsTrue(ToleranceLessThan(pp, pExpected, 1e-9),
                 TransformationError("EPSG 4326 -> EPSG 3857", pExpected, pp));

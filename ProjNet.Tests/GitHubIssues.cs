@@ -16,7 +16,6 @@ namespace ProjNet.UnitTests
         private static GeoPosition UtmToLatLon(double x, double y, int zone, bool isNorthernHemisphere)
         {
             IProjectedCoordinateSystem utmCoordSystem = ProjectedCoordinateSystem.WGS84_UTM(zone, isNorthernHemisphere);
-            Console.WriteLine(utmCoordSystem.ToString());
             IGeographicCoordinateSystem wgs84 = GeographicCoordinateSystem.WGS84;
             CoordinateTransformationFactory ctFact = new CoordinateTransformationFactory();
 
@@ -44,10 +43,13 @@ namespace ProjNet.UnitTests
             return new UtmPosition(lonLat[0], lonLat[1], zone);
         }
 
-        [Test, Description("UTM accuracy")]
+        [Test, Description("UTM accuracy"), Ignore("Input coordinates are not valid")]
         public void TestIssue13()
         {
             var k1 = UtmToLatLon(2000, 2000, 18, true);
+            Assert.AreEqual(-79.47082590, k1.Y, 1.0e-6);
+            Assert.AreEqual(0.01803920, k1.X, 1.0e-6);
+
             var k2 = LatLonToUtm(k1.X, k1.Y);
             Assert.That(k2.Z, Is.EqualTo(18d));
         }

@@ -37,7 +37,7 @@
     <DefineConstants>TRACE;PCL;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>$(SolutionDir)PCL\AnyCPU\ProjNet.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDir)Release\PCL\AnyCPU\ProjNet.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

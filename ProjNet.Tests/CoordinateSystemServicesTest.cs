@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -24,6 +26,7 @@ namespace ProjNet.UnitTests
             Assert.IsNotNull(css.GetCoordinateSystem(3857));
         }
 
+#if !PCL
         [TestCase(@"D:\temp\ConsoleApplication9\SpatialRefSys.xml")]
         public void TestConstructorLoadXml(string xmlPath)
         {
@@ -38,7 +41,6 @@ namespace ProjNet.UnitTests
             Assert.IsTrue(ReferenceEquals(css.GetCoordinateSystem("EPSG", 4326), css.GetCoordinateSystem(4326)));
 
         }
-
         [TestCase(@"")]
         public void TestConstructorLoadCsv(string csvPath)
         {
@@ -55,22 +57,30 @@ namespace ProjNet.UnitTests
             Thread.Sleep(1000);
 
         }
+#endif
 
 
         private static IEnumerable<KeyValuePair<int, string>> LoadCsv(string csvPath)
         {
 
-            Console.WriteLine("Reading '{0}'.", csvPath);
+            Debug.WriteLine("Reading '{0}'.", csvPath);
             var sw = new Stopwatch();
             sw.Start();
 
-            foreach (var sridWkt in SRIDReader.GetSrids())
+#if PCL
+            var mrs = typeof(SRIDReader).GetTypeInfo().Assembly.GetManifestResourceStream("SRID.csv");
+            using(var sr = new StreamReader(mrs))
+            foreach (var sridWkt in SRIDReader.GetSrids(sr))
+#else
+            foreach (var sridWkt in SRIDReader.GetSrids((string)null))
+#endif
                 yield return new KeyValuePair<int, string>(sridWkt.WktId, sridWkt.Wkt);
 
             sw.Stop();
-            Console.WriteLine("Read '{1}' in {0:N0}ms", sw.ElapsedMilliseconds, csvPath);
+            Debug.WriteLine("Read '{1}' in {0:N0}ms", sw.ElapsedMilliseconds, csvPath);
         }
 
+#if !PCL
         private static IEnumerable<KeyValuePair<int, string>> LoadXml(string xmlPath)
         {
             var stream = System.IO.File.OpenRead(xmlPath);
@@ -114,6 +124,6 @@ namespace ProjNet.UnitTests
             sw.Stop();
             Console.WriteLine("Read '{1}' in {0:N0}ms", sw.ElapsedMilliseconds, xmlPath);
         }
-
+#endif
     }
 }

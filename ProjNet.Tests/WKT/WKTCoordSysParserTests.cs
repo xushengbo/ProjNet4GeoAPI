@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using NUnit.Framework;
@@ -123,7 +125,14 @@ namespace ProjNet.UnitTests.Converters.WKT
         {
             CoordinateSystemFactory fac = new CoordinateSystemFactory();
             int parsecount = 0;
-            foreach (SRIDReader.WktString wkt in SRIDReader.GetSrids())
+
+#if PCL
+            var mrs = GetType().GetTypeInfo().Assembly.GetManifestResourceStream("ProjNet.UnitTests.SRID.csv");
+            using(var sr = new StreamReader(mrs))
+            foreach (SRIDReader.WktString wkt in SRIDReader.GetSrids(sr))
+#else
+            foreach (SRIDReader.WktString wkt in SRIDReader.GetSrids((string)null))
+#endif
             {
                 ICoordinateSystem cs = fac.CreateFromWkt(wkt.Wkt);
                 Assert.IsNotNull(cs, "Could not parse WKT: " + wkt);
@@ -131,7 +140,7 @@ namespace ProjNet.UnitTests.Converters.WKT
             }
             Assert.AreEqual(parsecount, 2671, "Not all WKT was parsed");
         }
-
+#if !PCL
         /// <summary>
         /// This test reads in a file with 2671 pre-defined coordinate systems and projections,
         /// and tries to create a transformation with them.
@@ -196,6 +205,8 @@ namespace ProjNet.UnitTests.Converters.WKT
             }
             Assert.GreaterOrEqual(parsecount, 2556, "Not all WKT was processed");
         }
+
+#endif
         [Test]
         public void TestUnitBeforeProjection()
         {
