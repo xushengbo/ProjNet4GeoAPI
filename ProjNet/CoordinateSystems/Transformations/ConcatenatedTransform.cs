@@ -19,6 +19,9 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+#if PCL
+using ICloneable = GeoAPI.ICloneable;
+#endif
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
@@ -149,8 +152,13 @@ namespace ProjNet.CoordinateSystems.Transformations
 		public ConcatenatedTransform Clone()
 		{
 			var clonedList = new List<ICoordinateTransformation>(_coordinateTransformationList.Count);
-			foreach (ICoordinateTransformation ct in _coordinateTransformationList)
-				clonedList.Add(ct);
+		    foreach (var ct in _coordinateTransformationList)
+		    {
+                if (ct is ICloneable)
+                    clonedList.Add((ICoordinateTransformation)((ICloneable)ct).Clone());
+                else
+                    clonedList.Add(ct);
+		    }
 			return new ConcatenatedTransform(clonedList);
 		}
 

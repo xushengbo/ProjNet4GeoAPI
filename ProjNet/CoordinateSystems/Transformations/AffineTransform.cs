@@ -21,7 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-
+#if PCL
+using ICloneable = GeoAPI.ICloneable;
+#endif
 #if !NET40
 
 namespace ProjNet.FrameworkReplacements
@@ -60,9 +62,9 @@ using ProjNet.FrameworkReplacements;
 #if !PCL
     [Serializable]
 #endif
-    public class AffineTransform : MathTransform
+    public class AffineTransform : MathTransform, ICloneable
     {
-        #region class variables
+#region class variables
         /// <summary>
         /// Saved inverse transform
         /// </summary>
@@ -84,9 +86,9 @@ using ProjNet.FrameworkReplacements;
         /// Number of columns = dimSource + 1
         /// </summary>
         private readonly double[,] transformMatrix;
-        #endregion class variables
+#endregion class variables
 
-        #region constructors & finalizers
+#region constructors & finalizers
         /// <summary>
         /// Creates instance of 2D affine transform (source dimensionality 2, target dimensionality 2) using the specified values
         /// </summary>
@@ -136,9 +138,9 @@ using ProjNet.FrameworkReplacements;
             //use specified matrix
             transformMatrix = matrix;
         }
-        #endregion constructors & finalizers
+#endregion constructors & finalizers
 
-        #region public properties
+#region public properties
         /// <summary>
         /// Gets a Well-Known text representation of this affine math transformation.
         /// </summary>
@@ -185,9 +187,9 @@ using ProjNet.FrameworkReplacements;
         /// Gets the dimension of output points.
         /// </summary>
         public override int DimTarget { get { return dimTarget; } }
-        #endregion public properties
+#endregion public properties
 
-        #region private methods
+#region private methods
 
         /// <summary>
         /// Return affine transformation matrix as group of parameter values that maiy be used for retrieving WKT of this affine transform
@@ -408,9 +410,9 @@ using ProjNet.FrameworkReplacements;
             }
             return x;
         }
-        #endregion private methods
+#endregion private methods
 
-        #region public methods
+#region public methods
         /// <summary>
         /// Returns the inverse of this affine transformation.
         /// </summary>
@@ -476,6 +478,13 @@ using ProjNet.FrameworkReplacements;
         {
             return (double[,])this.transformMatrix.Clone ();
         }
-        #endregion public methods
+#endregion public methods
+
+        public object Clone()
+        {
+            var tm = (double[,])transformMatrix.Clone();
+            return new AffineTransform(tm);
+
+        }
     }
 }

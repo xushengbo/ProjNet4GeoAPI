@@ -32,8 +32,8 @@ namespace ProjNet.CoordinateSystems.Transformations
     internal class DatumTransform : MathTransform
 	{
 		protected IMathTransform _inverse;
-		private readonly Wgs84ConversionInfo _toWgs94;
-		double[] v;
+		private readonly Wgs84ConversionInfo _toWgs84;
+		double[] _v;
 
 		private bool _isInverse;
 
@@ -47,8 +47,8 @@ namespace ProjNet.CoordinateSystems.Transformations
 
 		private DatumTransform(Wgs84ConversionInfo towgs84, bool isInverse)
 		{
-			_toWgs94 = towgs84;
-			v = _toWgs94.GetAffineTransform();
+            _toWgs84 = towgs84;
+			_v = _toWgs84.GetAffineTransform();
 			_isInverse = isInverse;
 		}
         /// <summary>
@@ -87,7 +87,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 		public override IMathTransform Inverse()
 		{
 			if (_inverse == null)
-				_inverse = new DatumTransform(_toWgs94,!_isInverse);
+				_inverse = new DatumTransform(_toWgs84, !_isInverse);
 			return _inverse;
 		}
 
@@ -100,9 +100,9 @@ namespace ProjNet.CoordinateSystems.Transformations
         private double[] Apply(double[] p)
         {
             return new double[] {
-				v[0] * (p[0] - v[3] * p[1] + v[2] * p[2]) + v[4],
-				v[0] * (v[3] * p[0] + p[1] - v[1] * p[2]) + v[5],
-			    v[0] * (-v[2] * p[0] + v[1] * p[1] + p[2]) + v[6], };
+				_v[0] * (p[0] - _v[3] * p[1] + _v[2] * p[2]) + _v[4],
+                _v[0] * (_v[3] * p[0] + p[1] - _v[1] * p[2]) + _v[5],
+                _v[0] * (-_v[2] * p[0] + _v[1] * p[1] + p[2]) + _v[6] };
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
 
             return new double[] {
-				(1-(v[0]-1)) * (p[0] + v[3] * p[1] - v[2] * p[2]) - v[4],
-			    (1-(v[0]-1)) * (-v[3] * p[0] + p[1] + v[1] * p[2]) - v[5],
-			    (1-(v[0]-1)) * ( v[2] * p[0] - v[1] * p[1] + p[2]) - v[6], };
+				(1-(_v[0]-1)) * (p[0] + _v[3] * p[1] - _v[2] * p[2]) - _v[4],
+			    (1-(_v[0]-1)) * (-_v[3] * p[0] + p[1] + _v[1] * p[2]) - _v[5],
+			    (1-(_v[0]-1)) * ( _v[2] * p[0] - _v[1] * p[1] + p[2]) - _v[6] };
         }
 
         /// <summary>
@@ -172,5 +172,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 		{
 			_isInverse = !_isInverse;
 		}
+
+	    public object Clone()
+	    {
+	        return new DatumTransform(_toWgs84, _isInverse);
+
+
+	    }
 	}
 }

@@ -20,6 +20,9 @@ using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+#if PCL
+using ICloneable = GeoAPI.ICloneable;
+#endif
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
@@ -44,7 +47,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 #if !PCL 
     [Serializable] 
 #endif
-    internal class GeocentricTransform : MathTransform
+    internal class GeocentricTransform : MathTransform, ICloneable
 	{
 		private const double COS_67P5 = 0.38268343236508977;    /* cosine of 67.5 degrees */
 		private const double AD_C = 1.0026000;                  /* Toms region 1 constant */
@@ -294,5 +297,11 @@ namespace ProjNet.CoordinateSystems.Transformations
 		{
 			get { throw new NotImplementedException("The method or operation is not implemented."); }
 		}
+
+	    public object Clone()
+	    {
+	        return new GeocentricTransform(_Parameters, _isInverse);
+	    }
+
 	}
 }

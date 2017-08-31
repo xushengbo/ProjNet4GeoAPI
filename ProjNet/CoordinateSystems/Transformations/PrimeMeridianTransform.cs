@@ -18,9 +18,9 @@
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+#if PCL
+using ICloneable = GeoAPI.ICloneable;
+#endif
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
@@ -31,7 +31,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 #if !PCL
     [Serializable]
 #endif
-    internal class PrimeMeridianTransform : MathTransform
+    internal class PrimeMeridianTransform : MathTransform, ICloneable
     {
         #region class variables
         private bool _isInverted = false;
@@ -123,6 +123,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         public override void Invert()
         {
             this._isInverted = !this._isInverted;
+        }
+
+        public object Clone()
+        {
+            return new PrimeMeridianTransform(_source, _target);
         }
 
         #endregion public methods

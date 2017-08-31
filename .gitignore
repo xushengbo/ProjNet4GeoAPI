@@ -186,3 +186,6 @@ UpgradeLog*.htm
 FakesAssemblies/
 /packages
 /ProjNET.Pcl/IO/CoordinateSystems/MathTransformWktReader.cs
+.nuget
+.nunit.runners
+.vs

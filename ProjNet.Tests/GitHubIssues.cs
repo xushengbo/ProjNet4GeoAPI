@@ -81,12 +81,12 @@ namespace ProjNet.UnitTests
             var itm = coordinateSystemFactory.CreateProjectedCoordinateSystem("ITM", itmGeo, projection, LinearUnit.Metre,
                 new AxisInfo("East", AxisOrientationEnum.East), new AxisInfo("North", AxisOrientationEnum.North));
 
-            Console.WriteLine(itm.ToString());
+            Debug.WriteLine(itm.ToString());
             var itm2 =
                 coordinateSystemFactory.CreateFromWkt(
                     "PROJCS[\"Israel / Israeli TM Grid\",GEOGCS[\"Israel\",DATUM[\"Israel\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[-48,55,52,0,0,0,0],AUTHORITY[\"EPSG\",\"6141\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4141\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",31.73439361111111],PARAMETER[\"central_meridian\",35.20451694444445],PARAMETER[\"scale_factor\",1.0000067],PARAMETER[\"false_easting\",219529.584],PARAMETER[\"false_northing\",626907.39],AUTHORITY[\"EPSG\",\"2039\"],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]");
-            Console.WriteLine();
-            Console.WriteLine(itm2.ToString());
+            Debug.WriteLine("");
+            Debug.WriteLine(itm2.ToString());
 
             string wkt = "GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]]";
             var wgs84 = CoordinateSystemWktReader.Parse(wkt, Encoding.UTF8) as ICoordinateSystem;
@@ -104,8 +104,21 @@ namespace ProjNet.UnitTests
             Assert.AreEqual(222286, transformed2.X, 0.01);
             Assert.AreEqual(631556, transformed2.Y, 0.01);
 
-            Console.WriteLine(transformed.ToString());
-            Console.WriteLine(transformed2.ToString());
+            Debug.WriteLine(transformed.ToString());
+            Debug.WriteLine(transformed2.ToString());
+
+            var mt2 = transform.MathTransform.Inverse();
+
+            var mt = transform.MathTransform;
+            mt.Invert();
+
+
+            //var jerusalem3 = mt2.Transform(transformed);
+            var jerusalem2 = mt.Transform(transformed);
+            Debug.WriteLine("");
+            Debug.WriteLine(jerusalem.ToString());
+            Debug.WriteLine(jerusalem2.ToString());
+            Assert.IsTrue(jerusalem.Distance(jerusalem2) < 0.05);
         }
     }
 }

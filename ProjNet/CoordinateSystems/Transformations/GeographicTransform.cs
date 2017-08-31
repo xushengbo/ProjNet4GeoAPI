@@ -164,5 +164,10 @@ namespace ProjNet.CoordinateSystems.Transformations
 		{
 			throw new NotImplementedException();
 		}
+
+	    public object Clone()
+	    {
+	        return new GeographicTransform(_SourceGCS, _TargetGCS);
+	    }
 	}
 }
